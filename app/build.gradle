@@ -86,7 +86,7 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     testImplementation "org.assertj:assertj-core:3.16.1"
 
-    // "Backporting" Java 8 streams for Android < 24
+    // "Back porting" Java 8 streams for Android < 24
     implementation 'net.sourceforge.streamsupport:android-retrostreams:1.7.2'
 
     // Kotlin
