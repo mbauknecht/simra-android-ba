@@ -13,7 +13,7 @@ import de.tuberlin.mcc.simra.app.BuildConfig;
 import de.tuberlin.mcc.simra.app.R;
 import de.tuberlin.mcc.simra.app.databinding.ActivityFeedbackBinding;
 
-public class FeedbackActivity extends AppCompatActivity {
+public class FeedbackActivity1 extends AppCompatActivity {
     ActivityFeedbackBinding binding;
 
     // ... (other class-level declarations, if any)

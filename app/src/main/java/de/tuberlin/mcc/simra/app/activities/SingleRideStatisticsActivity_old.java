@@ -1,6 +1,9 @@
 package de.tuberlin.mcc.simra.app.activities;
 
 
+import static de.tuberlin.mcc.simra.app.entities.MetaData.getMetaDataEntryForRide;
+import static de.tuberlin.mcc.simra.app.util.Utils.calculateCO2Savings;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -18,10 +21,7 @@ import de.tuberlin.mcc.simra.app.databinding.ActivitySingleRideStatisticsBinding
 import de.tuberlin.mcc.simra.app.entities.MetaDataEntry;
 import de.tuberlin.mcc.simra.app.util.SharedPref;
 
-import static de.tuberlin.mcc.simra.app.entities.MetaData.getMetaDataEntryForRide;
-import static de.tuberlin.mcc.simra.app.util.Utils.calculateCO2Savings;
-
-public class SingleRideStatisticsActivity extends AppCompatActivity {
+public class SingleRideStatisticsActivity_old extends AppCompatActivity {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Log tag
     private static final String TAG = "RideStatsActivity_LOG";
@@ -35,7 +35,7 @@ public class SingleRideStatisticsActivity extends AppCompatActivity {
 
 
     public static void startSingeRideStatisticsActivity(int rideId, Context context) {
-        Intent intent = new Intent(context, SingleRideStatisticsActivity.class);
+        Intent intent = new Intent(context, SingleRideStatisticsActivity_old.class);
         intent.putExtra(EXTRA_RIDE_ID, rideId);
         context.startActivity(intent);
     }
@@ -64,7 +64,7 @@ public class SingleRideStatisticsActivity extends AppCompatActivity {
         }
         rideId = getIntent().getIntExtra(EXTRA_RIDE_ID, 0);
 
-        MetaDataEntry metaDataEntry = getMetaDataEntryForRide(rideId, SingleRideStatisticsActivity.this);
+        MetaDataEntry metaDataEntry = getMetaDataEntryForRide(rideId, SingleRideStatisticsActivity_old.this);
 
         int distanceDivider = 0;
         String distanceUnit = "";

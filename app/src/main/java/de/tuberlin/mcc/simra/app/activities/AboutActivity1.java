@@ -12,7 +12,7 @@ import de.tuberlin.mcc.simra.app.R;
 import de.tuberlin.mcc.simra.app.databinding.ActivityAboutBinding;
 import de.tuberlin.mcc.simra.app.util.BaseActivity;
 
-public class AboutActivity extends BaseActivity {
+public class AboutActivity1 extends BaseActivity {
 
     private static final String EXTRA_URL = "URL";
 
@@ -43,7 +43,7 @@ public class AboutActivity extends BaseActivity {
 
     private void setupListView() {
         String[] items = getResources().getStringArray(R.array.aboutSimraItems);
-        binding.listView.setAdapter(new ArrayAdapter<>(AboutActivity.this,
+        binding.listView.setAdapter(new ArrayAdapter<>(AboutActivity1.this,
                 android.R.layout.simple_list_item_1, items));
 
         binding.listView.setOnItemClickListener((parent, view, position, id) -> handleListItemClick(position));
@@ -61,13 +61,13 @@ public class AboutActivity extends BaseActivity {
                 intent = createWebActivityIntent(position);
                 break;
             case 2:
-                intent = new Intent(AboutActivity.this, LicenseActivity.class);
+                intent = new Intent(AboutActivity1.this, LicenseActivity.class);
                 break;
             case 3:
-                intent = new Intent(AboutActivity.this, CreditsActivity.class);
+                intent = new Intent(AboutActivity1.this, CreditsActivity.class);
                 break;
             default:
-                Toast.makeText(AboutActivity.this, R.string.notReady, Toast.LENGTH_SHORT).show();
+                Toast.makeText(AboutActivity1.this, R.string.notReady, Toast.LENGTH_SHORT).show();
         }
         if (intent != null) {
             startActivity(intent);
@@ -75,7 +75,7 @@ public class AboutActivity extends BaseActivity {
     }
 
     private Intent createWebActivityIntent(int position) {
-        Intent intent = new Intent(AboutActivity.this, WebActivity.class);
+        Intent intent = new Intent(AboutActivity1.this, WebActivity.class);
         intent.putExtra(EXTRA_URL, position == 0 ? getString(R.string.link_simra_Page) : getString(R.string.privacyLink));
         return intent;
     }

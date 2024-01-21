@@ -22,11 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
-
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.BufferedReader;
@@ -42,6 +37,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import de.tuberlin.mcc.simra.app.R;
 import de.tuberlin.mcc.simra.app.databinding.ActivityHistoryBinding;
 import de.tuberlin.mcc.simra.app.entities.MetaData;
@@ -56,7 +55,7 @@ import static de.tuberlin.mcc.simra.app.util.SharedPref.lookUpBooleanSharedPrefs
 import static de.tuberlin.mcc.simra.app.util.SharedPref.writeBooleanToSharedPrefs;
 import static de.tuberlin.mcc.simra.app.util.Utils.fireProfileRegionPrompt;
 
-public class HistoryActivity extends BaseActivity {
+public class HistoryActivity_old extends BaseActivity {
     private static final String TAG = "HistoryActivity_LOG";
     ActivityHistoryBinding binding;
     boolean exitWhenDone = false;
@@ -65,7 +64,7 @@ public class HistoryActivity extends BaseActivity {
     BroadcastReceiver br;
 
     public static void startHistoryActivity(Context context) {
-        Intent intent = new Intent(context, HistoryActivity.class);
+        Intent intent = new Intent(context, HistoryActivity_old.class);
         context.startActivity(intent);
     }
 
@@ -108,14 +107,14 @@ public class HistoryActivity extends BaseActivity {
         });
 
         binding.upload.setOnClickListener(view -> {
-            if (!lookUpBooleanSharedPrefs("uploadWarningShown", false, "simraPrefs", HistoryActivity.this)) {
+            if (!lookUpBooleanSharedPrefs("uploadWarningShown", false, "simraPrefs", HistoryActivity_old.this)) {
                 fireUploadPrompt();
-            } else if (Profile.loadProfile(null, HistoryActivity.this).region == 0) {
-                fireProfileRegionPrompt(SharedPref.App.Regions.getLastSeenRegionsID(HistoryActivity.this), HistoryActivity.this);
+            } else if (Profile.loadProfile(null, HistoryActivity_old.this).region == 0) {
+                fireProfileRegionPrompt(SharedPref.App.Regions.getLastSeenRegionsID(HistoryActivity_old.this), HistoryActivity_old.this);
             } else {
-                Intent intent = new Intent(HistoryActivity.this, UploadService.class);
+                Intent intent = new Intent(HistoryActivity_old.this, UploadService.class);
                 startService(intent);
-                Toast.makeText(HistoryActivity.this, getString(R.string.upload_started), Toast.LENGTH_SHORT).show();
+                Toast.makeText(HistoryActivity_old.this, getString(R.string.upload_started), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -213,7 +212,7 @@ public class HistoryActivity extends BaseActivity {
     }
 
     public void fireDeletePrompt(int position, MyArrayAdapter arrayAdapter) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity.this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity_old.this);
         alert.setTitle(getString(R.string.warning));
         alert.setMessage(getString(R.string.delete_file_warning));
         alert.setPositiveButton(R.string.delete_ride_approve, (dialog, id) -> {
@@ -232,7 +231,7 @@ public class HistoryActivity extends BaseActivity {
                 }
             }
             MetaData.deleteMetaDataEntryForRide(Integer.parseInt(clicked), this);
-            Toast.makeText(HistoryActivity.this, R.string.ride_deleted, Toast.LENGTH_SHORT).show();
+            Toast.makeText(HistoryActivity_old.this, R.string.ride_deleted, Toast.LENGTH_SHORT).show();
             refreshMyRides();
         });
         alert.setNegativeButton(R.string.cancel, (dialog, id) -> {
@@ -242,19 +241,19 @@ public class HistoryActivity extends BaseActivity {
     }
 
     public void fireUploadPrompt() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity.this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity_old.this);
         alert.setTitle(getString(R.string.warning));
         alert.setMessage(getString(R.string.upload_file_warning));
         alert.setPositiveButton(R.string.upload, (dialog, id) -> {
-            if (Profile.loadProfile(null, HistoryActivity.this).region == 0) {
-                fireProfileRegionPrompt(SharedPref.App.Regions.getLastSeenRegionsID(HistoryActivity.this), HistoryActivity.this);
+            if (Profile.loadProfile(null, HistoryActivity_old.this).region == 0) {
+                fireProfileRegionPrompt(SharedPref.App.Regions.getLastSeenRegionsID(HistoryActivity_old.this), HistoryActivity_old.this);
             } else {
-                writeBooleanToSharedPrefs("uploadWarningShown", true, "simraPrefs", HistoryActivity.this);
-                Intent intent = new Intent(HistoryActivity.this, UploadService.class);
+                writeBooleanToSharedPrefs("uploadWarningShown", true, "simraPrefs", HistoryActivity_old.this);
+                Intent intent = new Intent(HistoryActivity_old.this, UploadService.class);
                 startService(intent);
-                Toast.makeText(HistoryActivity.this, getString(R.string.upload_started), Toast.LENGTH_SHORT).show();
+                Toast.makeText(HistoryActivity_old.this, getString(R.string.upload_started), Toast.LENGTH_SHORT).show();
                 if (exitWhenDone) {
-                    HistoryActivity.this.moveTaskToBack(true);
+                    HistoryActivity_old.this.moveTaskToBack(true);
                 }
             }
         });
@@ -331,7 +330,7 @@ public class HistoryActivity extends BaseActivity {
                 holder.status.setBackground(null);
             }
             holder.duration.setText(itemComponents[3]);
-            if (SharedPref.Settings.DisplayUnit.isImperial(HistoryActivity.this)) {
+            if (SharedPref.Settings.DisplayUnit.isImperial(HistoryActivity_old.this)) {
                 holder.distance.setText(String.valueOf(Math.round(((Double.parseDouble(itemComponents[5]) / 1600) * 100.0)) / 100.0));
                 holder.distanceUnit.setText("mi");
             } else {
@@ -356,7 +355,7 @@ public class HistoryActivity extends BaseActivity {
                         String fileOutput = dirFile.getName();
                         Log.d(TAG, "fileOutput: " + fileOutput + " clicked: " + clicked + "_");
                         if (fileOutput.startsWith(clicked + "_")) {
-                            ShowRouteActivity.startShowRouteActivity(Integer.parseInt(fileOutput.split("_", -1)[0]), Integer.parseInt(metaDataLines.get(metaDataLines.size() - position - 1)[3]), true, HistoryActivity.this);
+                            ShowRouteActivity.startShowRouteActivity(Integer.parseInt(fileOutput.split("_", -1)[0]), Integer.parseInt(metaDataLines.get(metaDataLines.size() - position - 1)[3]), true, HistoryActivity_old.this);
                         }
                     }
                 }
@@ -366,7 +365,7 @@ public class HistoryActivity extends BaseActivity {
                                            public boolean onLongClick(View view) {
                                                String clicked = (String) binding.listView.getItemAtPosition(position);
                                                longClickedRideID = Integer.parseInt(clicked.split(";")[0].substring(1));
-                                               androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(HistoryActivity.this).setTitle(R.string.exportRideTitle);
+                                               AlertDialog.Builder builder = new AlertDialog.Builder(HistoryActivity_old.this).setTitle(R.string.exportRideTitle);
                                                builder.setMessage(R.string.exportRideButtonText);
                                                builder.setPositiveButton(R.string.continueText, new DialogInterface.OnClickListener() {
                                                    @Override
@@ -406,12 +405,12 @@ public class HistoryActivity extends BaseActivity {
                     new ActivityResultCallback<Uri>() {
                         @Override
                         public void onActivityResult(Uri uri) {
-                            boolean successfullyExportedGPSPart = copyTo(IOUtils.Files.getGPSLogFile(longClickedRideID, false, HistoryActivity.this), uri, HistoryActivity.this);
-                            boolean successfullyExportedIncidentPart = copyTo(IOUtils.Files.getIncidentLogFile(longClickedRideID, false, HistoryActivity.this), uri, HistoryActivity.this);
+                            boolean successfullyExportedGPSPart = copyTo(IOUtils.Files.getGPSLogFile(longClickedRideID, false, HistoryActivity_old.this), uri, HistoryActivity_old.this);
+                            boolean successfullyExportedIncidentPart = copyTo(IOUtils.Files.getIncidentLogFile(longClickedRideID, false, HistoryActivity_old.this), uri, HistoryActivity_old.this);
                             if (successfullyExportedGPSPart && successfullyExportedIncidentPart) {
-                                Toast.makeText(HistoryActivity.this, R.string.exportRideSuccessToast, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HistoryActivity_old.this, R.string.exportRideSuccessToast, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(HistoryActivity.this, R.string.exportRideFailToast, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HistoryActivity_old.this, R.string.exportRideFailToast, Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

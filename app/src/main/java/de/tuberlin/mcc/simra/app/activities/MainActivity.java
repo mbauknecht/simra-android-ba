@@ -748,10 +748,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             intent.putExtra("URL", getString(R.string.tuberlin_impressum));
             startActivity(intent);
         } else if (id == R.id.nav_contact) {
-            Intent i = new Intent(MainActivity.this, ContactActivity.class);
+            Intent i = new Intent(MainActivity.this, FeedbackActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_bluetooth_connection) {
-            Intent intent = new Intent(MainActivity.this, OpenBikeSensorActivity.class);
+            Intent intent = new Intent(MainActivity.this, ScrollingTestActivity.class);
             startActivity(intent);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

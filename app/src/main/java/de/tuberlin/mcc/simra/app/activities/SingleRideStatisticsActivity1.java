@@ -1,6 +1,9 @@
 package de.tuberlin.mcc.simra.app.activities;
 
 
+import static de.tuberlin.mcc.simra.app.entities.MetaData.getMetaDataEntryForRide;
+import static de.tuberlin.mcc.simra.app.util.Utils.calculateCO2Savings;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -18,24 +21,24 @@ import de.tuberlin.mcc.simra.app.databinding.ActivitySingleRideStatisticsBinding
 import de.tuberlin.mcc.simra.app.entities.MetaDataEntry;
 import de.tuberlin.mcc.simra.app.util.SharedPref;
 
-import static de.tuberlin.mcc.simra.app.entities.MetaData.getMetaDataEntryForRide;
-import static de.tuberlin.mcc.simra.app.util.Utils.calculateCO2Savings;
+// ... (imports remain unchanged)
 
-public class SingleRideStatisticsActivity extends AppCompatActivity {
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Log tag
+public class SingleRideStatisticsActivity1 extends AppCompatActivity {
+
     private static final String TAG = "RideStatsActivity_LOG";
     private static final String EXTRA_RIDE_ID = "EXTRA_RIDE_ID";
+    private static final int MILLISECONDS_IN_HOUR = 3600000;
+    private static final int SECONDS_IN_HOUR = 3600;
+    private static final int METERS_IN_KILOMETER = 1000;
+    private static final int METERS_IN_MILE = 1600;
 
+    private ImageButton backBtn;
+    private TextView toolbarTxt;
+    private int rideId;
+    private ActivitySingleRideStatisticsBinding binding;
 
-    ImageButton backBtn;
-    TextView toolbarTxt;
-    int rideId;
-    ActivitySingleRideStatisticsBinding binding;
-
-
-    public static void startSingeRideStatisticsActivity(int rideId, Context context) {
-        Intent intent = new Intent(context, SingleRideStatisticsActivity.class);
+    public static void startSingleRideStatisticsActivity1(int rideId, Context context) {
+        Intent intent = new Intent(context, SingleRideStatisticsActivity1.class);
         intent.putExtra(EXTRA_RIDE_ID, rideId);
         context.startActivity(intent);
     }
@@ -46,7 +49,13 @@ public class SingleRideStatisticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySingleRideStatisticsBinding.inflate(LayoutInflater.from(this));
         setContentView(binding.getRoot());
+        initializeToolbar();
+        initializeUI();
+        processIntent();
+        displayRideStatistics();
+    }
 
+    private void initializeToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -54,30 +63,45 @@ public class SingleRideStatisticsActivity extends AppCompatActivity {
         toolbar.setSubtitle("");
         toolbarTxt = findViewById(R.id.toolbar_title);
         toolbarTxt.setText(R.string.title_activity_statistics);
-
         backBtn = findViewById(R.id.back_button);
         backBtn.setOnClickListener(v -> finish());
-        Boolean isImperialUnit = SharedPref.Settings.DisplayUnit.isImperial(this);
+    }
 
+    private void initializeUI() {
+        // Initialize UI elements here if needed
+    }
+
+    private void processIntent() {
         if (!getIntent().hasExtra(EXTRA_RIDE_ID)) {
             throw new RuntimeException("Extra: " + EXTRA_RIDE_ID + " not defined.");
         }
         rideId = getIntent().getIntExtra(EXTRA_RIDE_ID, 0);
+    }
 
-        MetaDataEntry metaDataEntry = getMetaDataEntryForRide(rideId, SingleRideStatisticsActivity.this);
+    private double calculateAverageSpeed(long distance, long startTime, long endTime, long waitedTime, int distanceDivider) {
+        // Calculate duration
+        long duration = endTime - startTime;
 
-        int distanceDivider = 0;
-        String distanceUnit = "";
-        String speedUnit = "";
-        if (isImperialUnit) {
-            distanceDivider = 1600;
-            distanceUnit = " mi";
-            speedUnit = " mph";
-        } else {
-            distanceDivider = 1000;
-            distanceUnit = " km";
-            speedUnit = " km/h";
+        // Existing logic for average speed calculation
+        double averageSpeedRaw = ((((double) distance) / (double) distanceDivider) /
+                ((((double) duration / (double) 1000) - ((double) waitedTime)) / (double) 3600));
+
+        return averageSpeedRaw;
+    }
+
+    private void displayRideStatistics() {
+        MetaDataEntry metaDataEntry = getMetaDataEntryForRide(rideId, this);
+        if (metaDataEntry == null) {
+            // Handle the case where MetaDataEntry is null
+            return;
         }
+
+        // Distance and unit conversion
+        int distanceDivider = SharedPref.Settings.DisplayUnit.isImperial(this) ? METERS_IN_MILE : METERS_IN_KILOMETER;
+        String distanceUnit = SharedPref.Settings.DisplayUnit.isImperial(this) ? " mi" : " km";
+        String speedUnit = SharedPref.Settings.DisplayUnit.isImperial(this) ? " mph" : " km/h";
+
+        // ... (remaining logic remains unchanged)
 
         // total distance of this ride
         TextView distanceOfRide = binding.distanceOfRideText;
@@ -133,9 +157,12 @@ public class SingleRideStatisticsActivity extends AppCompatActivity {
 
         co2SavingsText.invalidate();
 
+        // Distance and unit conversion
+        distanceDivider = SharedPref.Settings.DisplayUnit.isImperial(this) ? METERS_IN_MILE : METERS_IN_KILOMETER;  // manually corrected
+
         // average speed of per ride of all uploaded rides
         TextView averageSpeedText = binding.averageSpeedText;
-        double averageSpeedRaw = ((((double) metaDataEntry.distance) / (double) distanceDivider) / ((((double) duration / (double) 1000) - ((double) metaDataEntry.waitedTime)) / (double) 3600));
+        double averageSpeedRaw = calculateAverageSpeed(metaDataEntry.distance, metaDataEntry.startTime, metaDataEntry.endTime, metaDataEntry.waitedTime, distanceDivider);
         averageSpeedText.setText(getText(R.string.average_Speed) + " " + (Math.round(averageSpeedRaw * 100.0) / 100.0) + speedUnit);
         averageSpeedText.invalidate();
     }
@@ -145,6 +172,4 @@ public class SingleRideStatisticsActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG, "onDestroy() called");
     }
-
-
 }
