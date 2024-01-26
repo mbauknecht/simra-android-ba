@@ -1,4 +1,4 @@
-package de.tuberlin.mcc.simra.app.activities
+/*package de.tuberlin.mcc.simra.app.activities
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -94,4 +94,4 @@ class FeedbackActivity4 : AppCompatActivity() {
                 intent?.let { startActivity(it) }
             }
     }
-}
+}*/

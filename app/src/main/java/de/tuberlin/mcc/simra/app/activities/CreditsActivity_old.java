@@ -1,4 +1,4 @@
-package de.tuberlin.mcc.simra.app.activities;
+/*package de.tuberlin.mcc.simra.app.activities;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ public class CreditsActivity_old extends AppCompatActivity {
     /**
      * Layout Binding.
      */
-    ActivityCreditsBinding binding;
+ /*   ActivityCreditsBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

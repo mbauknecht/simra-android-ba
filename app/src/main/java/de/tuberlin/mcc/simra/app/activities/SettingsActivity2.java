@@ -1,4 +1,4 @@
-package de.tuberlin.mcc.simra.app.activities;
+/*package de.tuberlin.mcc.simra.app.activities;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -287,7 +287,7 @@ public class SettingsActivity2 extends BaseActivity {
         binding.privacyDistanceTextLeft.setText(minDistance + getString(R.string.meters_short));
         binding.privacyDistanceTextRight.setText(maxDistance + getString(R.string.meters_short));
 */
-        binding.privacyDistanceSlider.addOnChangeListener((slider, changeListener, touchChangeListener) -> {
+  /*      binding.privacyDistanceSlider.addOnChangeListener((slider, changeListener, touchChangeListener) -> {
             SharedPref.Settings.Ride.PrivacyDistance.setDistance(Math.round(slider.getValue()), displayUnit, this);
         });
     }

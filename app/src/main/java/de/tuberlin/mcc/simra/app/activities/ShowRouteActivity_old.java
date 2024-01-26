@@ -1,4 +1,4 @@
-package de.tuberlin.mcc.simra.app.activities;
+/*package de.tuberlin.mcc.simra.app.activities;
 
 import static de.tuberlin.mcc.simra.app.util.Constants.ZOOM_LEVEL;
 import static de.tuberlin.mcc.simra.app.util.SharedPref.lookUpIntSharedPrefs;
@@ -104,7 +104,7 @@ public class ShowRouteActivity_old extends BaseActivity {
      * @param pl
      * @return double Array {South, North, West, East}
      */
-    private static BoundingBox getBoundingBox(Polyline pl) {
+   /* private static BoundingBox getBoundingBox(Polyline pl) {
 
         // {North, East, South, West}
         List<GeoPoint> geoPoints = pl.getPoints();
@@ -441,7 +441,7 @@ public class ShowRouteActivity_old extends BaseActivity {
      *
      * @param bBox
      */
-    public void zoomToBBox(BoundingBox bBox) {
+   /* public void zoomToBBox(BoundingBox bBox) {
         // Usually the command in the if body should suffice
         // but osmdroid is buggy and we need the else part to fix it.
         MapView mMapView = binding.showRouteMap;

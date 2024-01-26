@@ -1,4 +1,4 @@
-package de.tuberlin.mcc.simra.app.activities;
+/*package de.tuberlin.mcc.simra.app.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -18,7 +18,7 @@ public class FeedbackActivity_old extends AppCompatActivity {
     /**
      * Layout Binding.
      */
-    ActivityFeedbackBinding binding;
+ /*   ActivityFeedbackBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

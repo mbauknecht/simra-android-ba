@@ -1,5 +1,7 @@
+/*3
 package de.tuberlin.mcc.simra.app.activities;
-
+ */
+/*
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -290,7 +292,7 @@ public class HistoryActivity2 extends BaseActivity {
 
      */
     // ... (continue with the rest of the code)
-
+/*
     public class MyArrayAdapter extends ArrayAdapter<String> {
         String TAG = "MyArrayAdapter_LOG";
         Context context;
@@ -460,7 +462,7 @@ public class HistoryActivity2 extends BaseActivity {
                     });
 */
     // URI import
-
+/*
     private void handleExportRideActivityResult(Uri uri) {
         boolean successfullyExportedGPSPart = copyTo(IOUtils.Files.getGPSLogFile(longClickedRideID, false, HistoryActivity2.this), uri, HistoryActivity2.this);
         boolean successfullyExportedIncidentPart = copyTo(IOUtils.Files.getIncidentLogFile(longClickedRideID, false, HistoryActivity2.this), uri, HistoryActivity2.this);

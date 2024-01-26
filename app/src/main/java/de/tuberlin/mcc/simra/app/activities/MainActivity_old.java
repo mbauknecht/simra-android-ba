@@ -1,4 +1,17 @@
-package de.tuberlin.mcc.simra.app.activities;
+/*package de.tuberlin.mcc.simra.app.activities;
+
+import static de.tuberlin.mcc.simra.app.entities.Profile.profileIsInUnknownRegion;
+import static de.tuberlin.mcc.simra.app.update.VersionUpdater.Legacy.Utils.getAppVersionNumber;
+import static de.tuberlin.mcc.simra.app.util.Constants.ZOOM_LEVEL;
+import static de.tuberlin.mcc.simra.app.util.PermissionHelper.hasBLEPermissions;
+import static de.tuberlin.mcc.simra.app.util.PermissionHelper.requestBlePermissions;
+import static de.tuberlin.mcc.simra.app.util.SimRAuthenticator.getClientHash;
+import static de.tuberlin.mcc.simra.app.util.Utils.activityResultLauncher;
+import static de.tuberlin.mcc.simra.app.util.Utils.fireProfileRegionPrompt;
+import static de.tuberlin.mcc.simra.app.util.Utils.getNews;
+import static de.tuberlin.mcc.simra.app.util.Utils.isLocationServiceOff;
+import static de.tuberlin.mcc.simra.app.util.Utils.nearestRegionsToThisLocation;
+import static de.tuberlin.mcc.simra.app.util.Utils.overwriteFile;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -31,6 +44,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.util.Consumer;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -62,43 +84,22 @@ import java.util.concurrent.TimeoutException;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.util.Consumer;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import de.tuberlin.mcc.simra.app.BuildConfig;
 import de.tuberlin.mcc.simra.app.R;
 import de.tuberlin.mcc.simra.app.databinding.ActivityMainBinding;
 import de.tuberlin.mcc.simra.app.entities.IncidentLogEntry;
 import de.tuberlin.mcc.simra.app.entities.MetaData;
 import de.tuberlin.mcc.simra.app.entities.Profile;
-import de.tuberlin.mcc.simra.app.util.ConnectionManager.BLESTATE;
 import de.tuberlin.mcc.simra.app.services.RecorderService;
 import de.tuberlin.mcc.simra.app.util.ConnectionManager;
+import de.tuberlin.mcc.simra.app.util.ConnectionManager.BLESTATE;
 import de.tuberlin.mcc.simra.app.util.IOUtils;
 import de.tuberlin.mcc.simra.app.util.IncidentBroadcaster;
 import de.tuberlin.mcc.simra.app.util.PermissionHelper;
 import de.tuberlin.mcc.simra.app.util.SharedPref;
 import de.tuberlin.mcc.simra.app.util.ble.ConnectionEventListener;
 
-import static de.tuberlin.mcc.simra.app.entities.Profile.profileIsInUnknownRegion;
-import static de.tuberlin.mcc.simra.app.update.VersionUpdater.Legacy.Utils.getAppVersionNumber;
-import static de.tuberlin.mcc.simra.app.util.Constants.ZOOM_LEVEL;
-import static de.tuberlin.mcc.simra.app.util.PermissionHelper.hasBLEPermissions;
-import static de.tuberlin.mcc.simra.app.util.PermissionHelper.requestBlePermissions;
-import static de.tuberlin.mcc.simra.app.util.SimRAuthenticator.getClientHash;
-import static de.tuberlin.mcc.simra.app.util.Utils.activityResultLauncher;
-import static de.tuberlin.mcc.simra.app.util.Utils.fireProfileRegionPrompt;
-import static de.tuberlin.mcc.simra.app.util.Utils.getNews;
-import static de.tuberlin.mcc.simra.app.util.Utils.isLocationServiceOff;
-import static de.tuberlin.mcc.simra.app.util.Utils.nearestRegionsToThisLocation;
-import static de.tuberlin.mcc.simra.app.util.Utils.overwriteFile;
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback{
+public class MainActivity_old extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback{
 
     private static final String TAG = "MainActivity_LOG";
     private final static int REQUEST_ENABLE_BT = 1;
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Gets called, when OBS is enabled in the settings and user tries to star recording but there
      * is not a connection to an OBS yet.
      */
-    private void showOBSNotConnectedRecordingWarning() {
+    /*private void showOBSNotConnectedRecordingWarning() {
         android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(this);
         alert.setTitle(R.string.not_connected_warning_title);
         alert.setMessage(R.string.not_connected_recording_warning_message);
@@ -155,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Prompts user to open OBS settings or deactivate OBS.
      * Gets called, when a connection to an OBS fails three times in a row.
      */
-    private void showOBSNotConnectedWarning() {
+  /*  private void showOBSNotConnectedWarning() {
         if (showingOBSWarning) {
             return;
         }
@@ -180,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Gets called, if OBS is enabled in the settings but Bluetooth is disabled, so SimRa cannot
      * connect to OBS.
      */
-    private void showBluetoothNotEnableWarning() {
+   /* private void showBluetoothNotEnableWarning() {
         android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(this);
         alert.setTitle(R.string.bluetooth_not_enable_title);
         alert.setMessage(R.string.bluetooth_not_enable_message);
@@ -198,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Gets called if user responds to the Bluetooth alert. Starts obs connection or disables obs.
      */
-    @Override
+  /*  @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_ENABLE_BT) {
@@ -332,11 +333,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         Consumer<Integer> recordIncident = incidentType -> {
-            Toast t = Toast.makeText(MainActivity.this, R.string.recorded_incident, Toast.LENGTH_SHORT);
+            Toast t = Toast.makeText(MainActivity_old.this, R.string.recorded_incident, Toast.LENGTH_SHORT);
             t.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 230);
             t.show();
 
-            IncidentBroadcaster.broadcastIncident(MainActivity.this, incidentType);
+            IncidentBroadcaster.broadcastIncident(MainActivity_old.this, incidentType);
         };
 
         this.<MaterialButton>findViewById(R.id.report_closepass_incident).setOnClickListener(v -> {
@@ -359,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     ShowRouteActivity.startShowRouteActivity(mBoundRecorderService.getCurrentRideKey(),
                             MetaData.STATE.JUST_RECORDED, true, this);
                 } else {
-                    new AlertDialog.Builder(MainActivity.this)
+                    new AlertDialog.Builder(MainActivity_old.this)
                             .setMessage(getString(R.string.errorRideNotRecorded))
                             .setCancelable(false)
                             .setPositiveButton("OK", (dialog, which) -> {
@@ -376,14 +377,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         // OpenBikeSensor
-        activityResultLauncher = activityResultLauncher(MainActivity.this);
+        activityResultLauncher = activityResultLauncher(MainActivity_old.this);
         binding.appBarMain.buttonRideSettingsObs.setOnClickListener(view -> startActivity(new Intent(this, OpenBikeSensorActivity.class)));
     }
 
     /**
      * Runnable to connect to OBS.
      */
-    FutureTask<Boolean> obsFT;
+  /*  FutureTask<Boolean> obsFT;
     public class OBSTryConnectRunnable implements Runnable {
         public void run() {
             if (connectionEventListener == null) {
@@ -411,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     // updateOBSButtonStatus(BLESTATE.FOUND);
                     updateOBSButtonStatus();
                     List<UUID> characteristicsToSubscribeTo = List.of(ConnectionManager.INSTANCE.getCLOSE_PASS_CHARACTERISTIC_UUID(),ConnectionManager.INSTANCE.getSENSOR_DISTANCE_CHARACTERISTIC_UUID());
-                    ConnectionManager.INSTANCE.connect(characteristicsToSubscribeTo,MainActivity.this);
+                    ConnectionManager.INSTANCE.connect(characteristicsToSubscribeTo, MainActivity_old.this);
                     return null;
                 });
                 connectionEventListener.setOnConnectionSetupComplete(bluetoothGatt -> {
@@ -443,9 +444,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 /*if (ConnectionManager.INSTANCE.isConnected()) {
                     // updateOBSButtonStatus(BLESTATE.CONNECTED);
                 }*/
-            }
+            /*}
             if (ConnectionManager.INSTANCE.getBleState() == BLESTATE.DISCONNECTED) {
-                ConnectionManager.INSTANCE.startScan(MainActivity.this);
+                ConnectionManager.INSTANCE.startScan(MainActivity_old.this);
                 // updateOBSButtonStatus(BLESTATE.SEARCHING);
             }
             updateOBSButtonStatus();
@@ -455,7 +456,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void tryConnectToOBS() {
-        if(hasBLEPermissions(MainActivity.this)) {
+        if(hasBLEPermissions(MainActivity_old.this)) {
             Log.d(TAG, "has BLE Permissions");
             if (!obsEnabled) {
                 Log.e(TAG, "OBS is not enabled (anymore)");
@@ -494,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         } else {
             Log.d(TAG, "has not BLE permissions. Requesting...");
-            requestBlePermissions(MainActivity.this, REQUEST_ENABLE_BT);
+            requestBlePermissions(MainActivity_old.this, REQUEST_ENABLE_BT);
         }
     }
 
@@ -503,7 +504,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Deactivates the OBS Settings, so that in future SimRa won't try to connect to OBS automatically
      */
-    private void deactivateOBS() {
+    /*private void deactivateOBS() {
         obsEnabled = false;
         binding.appBarMain.buttonRideSettingsObs.setVisibility(View.GONE);
         SharedPref.Settings.OpenBikeSensor.setEnabled(false, this);
@@ -533,17 +534,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void startRecording() {
         if (!PermissionHelper.hasBasePermissions(this)) {
-            PermissionHelper.requestFirstBasePermissionsNotGranted(MainActivity.this);
-            Toast.makeText(MainActivity.this, R.string.recording_not_started, Toast.LENGTH_LONG).show();
+            PermissionHelper.requestFirstBasePermissionsNotGranted(MainActivity_old.this);
+            Toast.makeText(MainActivity_old.this, R.string.recording_not_started, Toast.LENGTH_LONG).show();
         } else {
             if (isLocationServiceOff(locationManager)) {
                 // notify user
-                new AlertDialog.Builder(MainActivity.this).setMessage((R.string.locationServiceisOff + " " + R.string.enableToRecord))
+                new AlertDialog.Builder(MainActivity_old.this).setMessage((R.string.locationServiceisOff + " " + R.string.enableToRecord))
                         .setPositiveButton(android.R.string.ok,
-                                (paramDialogInterface, paramInt) -> MainActivity.this
+                                (paramDialogInterface, paramInt) -> MainActivity_old.this
                                         .startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
                         .setNegativeButton(R.string.cancel, null).show();
-                Toast.makeText(MainActivity.this, R.string.recording_not_started, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity_old.this, R.string.recording_not_started, Toast.LENGTH_LONG).show();
 
             } else {
                 // show stop button, hide start button
@@ -551,11 +552,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
                 // start RecorderService for accelerometer data recording
-                Intent intent = new Intent(MainActivity.this, RecorderService.class);
+                Intent intent = new Intent(MainActivity_old.this, RecorderService.class);
                 startService(intent);
                 bindService(intent, mRecorderServiceConnection, Context.BIND_IMPORTANT);
                 recording = true;
-                Toast.makeText(MainActivity.this, R.string.recording_started, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity_old.this, R.string.recording_started, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -610,7 +611,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (mBluetoothAdapter == null) {
                 // Device does not support Bluetooth
                 deactivateOBS();
-                Toast.makeText(MainActivity.this, R.string.openbikesensor_bluetooth_incompatible, Toast.LENGTH_LONG)
+                Toast.makeText(MainActivity_old.this, R.string.openbikesensor_bluetooth_incompatible, Toast.LENGTH_LONG)
                         .show();
             } else if (!mBluetoothAdapter.isEnabled() && obsEnabled) {
                 // Bluetooth is disabled
@@ -658,7 +659,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Refresh the osmdroid configuration on pausing.
         mMapView.onPause(); // needed for compass and icons
-        locationManager.removeUpdates(MainActivity.this);
+        locationManager.removeUpdates(MainActivity_old.this);
         mLocationOverlay.onPause();
         mLocationOverlay.disableMyLocation();
         // Stop listening to OBS callbacks
@@ -721,19 +722,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_history) {
-            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+            Intent intent = new Intent(MainActivity_old.this, HistoryActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_demographic_data) {
-            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+            Intent intent = new Intent(MainActivity_old.this, ProfileActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_statistics) {
-            Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
+            Intent intent = new Intent(MainActivity_old.this, StatisticsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_aboutSimRa) {
-            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+            Intent intent = new Intent(MainActivity_old.this, AboutActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_setting) {
-            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            Intent intent = new Intent(MainActivity_old.this, SettingsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_tutorial) {
             Intent i = new Intent(Intent.ACTION_VIEW);
@@ -744,14 +745,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             intent.setData(Uri.parse(getString(R.string.link_simra_Dashboard)));
             startActivity(intent);
         } else if (id == R.id.nav_imprint) {
-            Intent intent = new Intent(MainActivity.this, WebActivity.class);
+            Intent intent = new Intent(MainActivity_old.this, WebActivity.class);
             intent.putExtra("URL", getString(R.string.tuberlin_impressum));
             startActivity(intent);
         } else if (id == R.id.nav_contact) {
-            Intent i = new Intent(MainActivity.this, FeedbackActivity.class);
+            Intent i = new Intent(MainActivity_old.this, FeedbackActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_bluetooth_connection) {
-            Intent intent = new Intent(MainActivity.this, OpenBikeSensorActivity.class);
+            Intent intent = new Intent(MainActivity_old.this, ScrollingTestActivity.class);
             startActivity(intent);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -781,7 +782,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Because only AlertDialog has cancel method.
         AlertDialog alertDialog = null;
         // Create a alert dialog builder.
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity_old.this);
         // Get custom login form view.
         View settingsView = getLayoutInflater().inflate(R.layout.new_update_prompt, null);
 
@@ -849,7 +850,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void fireNewsPrompt() {
 
         // get the news from the downloaded config
-        String[] simRa_news_config = getNews(MainActivity.this);
+        String[] simRa_news_config = getNews(MainActivity_old.this);
         if (simRa_news_config.length <= 1) {
             Log.e(TAG, "Empty simRa_new_config!");
             return;
@@ -859,7 +860,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Because only AlertDialog has cancel method.
         AlertDialog alertDialog;
         // Create a alert dialog builder.
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity_old.this);
         // Get news popup view.
         View newsView = getLayoutInflater().inflate(R.layout.news_popup, null);
         LinearLayout linearLayout = newsView.findViewById(R.id.news_blocks);
@@ -870,7 +871,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (simRa_news_config[i].startsWith("i")){
                 continue;
             }
-            TextView tv = new TextView(MainActivity.this);
+            TextView tv = new TextView(MainActivity_old.this);
             int textColor = getResources().getColor(R.color.colorPrimary, null);
             if (simRa_news_config[i].startsWith("*")) {
                 textColor = getResources().getColor(R.color.colorAccent, null);
@@ -895,7 +896,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         AlertDialog finalAlertDialog = alertDialog;
         okButton.setOnClickListener(v -> {
-            SharedPref.App.News.setLastSeenNewsID(newsID, MainActivity.this);
+            SharedPref.App.News.setLastSeenNewsID(newsID, MainActivity_old.this);
             finalAlertDialog.cancel();
             // download the newest region list from the backend and prompt user to go to "Profile" and set region, if a new region has been added and the region is set as UNKNOWN or other.
             new RegionTask().execute();
@@ -908,14 +909,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private boolean actualSelectedRegionNotInTopThreeNearestRegion() {
-        if (PermissionHelper.hasBasePermissions(MainActivity.this)) {
+        if (PermissionHelper.hasBasePermissions(MainActivity_old.this)) {
             @SuppressLint("MissingPermission")
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (location == null) {
                 return false;
             }
-            int selectedRegion = Profile.loadProfile(null, MainActivity.this).region;
-            int[] nearestRegions = nearestRegionsToThisLocation(location.getLatitude(), location.getLongitude(), MainActivity.this);
+            int selectedRegion = Profile.loadProfile(null, MainActivity_old.this).region;
+            int[] nearestRegions = nearestRegionsToThisLocation(location.getLatitude(), location.getLongitude(), MainActivity_old.this);
             for (int nearestRegion : nearestRegions) {
                 if (nearestRegion == selectedRegion) {
                     return false;
@@ -940,19 +941,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    MainActivity.this.findViewById(R.id.checkingAppVersionProgressBarRelativeLayout).setVisibility(View.VISIBLE);
+                    MainActivity_old.this.findViewById(R.id.checkingAppVersionProgressBarRelativeLayout).setVisibility(View.VISIBLE);
                 }
             });
         }
 
         @Override
         protected String doInBackground(String... strings) {
-            installedAppVersion = getAppVersionNumber(MainActivity.this);
+            installedAppVersion = getAppVersionNumber(MainActivity_old.this);
 
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             StringBuilder response = new StringBuilder();
             try {
-                URL url = new URL(BuildConfig.API_ENDPOINT + BuildConfig.API_VERSION + "check-version?clientHash=" + getClientHash(MainActivity.this));
+                URL url = new URL(BuildConfig.API_ENDPOINT + BuildConfig.API_VERSION + "check-version?clientHash=" + getClientHash(MainActivity_old.this));
                 Log.d(TAG, "URL: " + url.toString());
                 HttpsURLConnection urlConnection =
                         (HttpsURLConnection) url.openConnection();
@@ -993,11 +994,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    MainActivity.this.findViewById(R.id.checkingAppVersionProgressBarRelativeLayout).setVisibility(View.GONE);
+                    MainActivity_old.this.findViewById(R.id.checkingAppVersionProgressBarRelativeLayout).setVisibility(View.GONE);
                 }
             });
             if ((newestAppVersion > 0 && urlToNewestAPK != null && critical != null) && installedAppVersion < newestAppVersion) {
-                MainActivity.this.fireNewAppVersionPrompt(installedAppVersion, newestAppVersion, urlToNewestAPK, critical);
+                MainActivity_old.this.fireNewAppVersionPrompt(installedAppVersion, newestAppVersion, urlToNewestAPK, critical);
             } else {
                 new NewsTask().execute();
             }
@@ -1021,11 +1022,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             StringBuilder checkRegionsResponse = new StringBuilder();
             int status = 0;
-            lastSeenRegionsID = SharedPref.App.Regions.getLastSeenRegionsID(MainActivity.this);
+            lastSeenRegionsID = SharedPref.App.Regions.getLastSeenRegionsID(MainActivity_old.this);
             try {
 
                 URL url = new URL(
-                        BuildConfig.API_ENDPOINT + BuildConfig.API_VERSION + "check-regions?clientHash=" + getClientHash(MainActivity.this) + "&lastSeenRegionsID=" + lastSeenRegionsID);
+                        BuildConfig.API_ENDPOINT + BuildConfig.API_VERSION + "check-regions?clientHash=" + getClientHash(MainActivity_old.this) + "&lastSeenRegionsID=" + lastSeenRegionsID);
                 Log.d(TAG, "URL: " + url.toString());
                 HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -1050,7 +1051,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             Log.d(TAG, "GET regions response: " + checkRegionsResponse.toString());
             if (status == 200 && checkRegionsResponse.length() > 0) {
-                File regionsFile = IOUtils.Files.getRegionsFile(MainActivity.this);
+                File regionsFile = IOUtils.Files.getRegionsFile(MainActivity_old.this);
                 overwriteFile(checkRegionsResponse.toString(), regionsFile);
             }
             return null;
@@ -1062,10 +1063,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // prompt user to go to "Profile" and set region, if regions have been updated and the region is set as UNKNOWN or other.
             Log.d(TAG, lastSeenRegionsID + " < " + regionsID + ": " + (lastSeenRegionsID < regionsID));
             Log.d(TAG, "actualSelectedRegionNotInTopThreeNearestRegion(): " + actualSelectedRegionNotInTopThreeNearestRegion());
-            if (!SharedPref.App.RegionsPrompt.getRegionPromptShownAfterV81(MainActivity.this) || (!SharedPref.App.RegionsPrompt.getDoNotShowRegionPrompt(MainActivity.this) &&
-                    (((lastSeenRegionsID < regionsID) && profileIsInUnknownRegion(MainActivity.this)) ||
+            if (!SharedPref.App.RegionsPrompt.getRegionPromptShownAfterV81(MainActivity_old.this) || (!SharedPref.App.RegionsPrompt.getDoNotShowRegionPrompt(MainActivity_old.this) &&
+                    (((lastSeenRegionsID < regionsID) && profileIsInUnknownRegion(MainActivity_old.this)) ||
                             actualSelectedRegionNotInTopThreeNearestRegion()))) {
-                fireProfileRegionPrompt(regionsID, MainActivity.this);
+                fireProfileRegionPrompt(regionsID, MainActivity_old.this);
             }
         }
     }
@@ -1088,14 +1089,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             StringBuilder checkNewsResponseEN = new StringBuilder();
             int statusDE = 0;
             int statusEN = 0;
-            int lastSeenNewsID = SharedPref.App.News.getLastSeenNewsID(MainActivity.this);
+            int lastSeenNewsID = SharedPref.App.News.getLastSeenNewsID(MainActivity_old.this);
             try {
 
                 URL url_de = new URL(
-                        BuildConfig.API_ENDPOINT + BuildConfig.API_VERSION + "check-news?clientHash=" + getClientHash(MainActivity.this) + "&lastSeenNewsID=" + lastSeenNewsID + "&newsLanguage=de");
+                        BuildConfig.API_ENDPOINT + BuildConfig.API_VERSION + "check-news?clientHash=" + getClientHash(MainActivity_old.this) + "&lastSeenNewsID=" + lastSeenNewsID + "&newsLanguage=de");
                 Log.d(TAG, "URL_DE: " + url_de.toString());
                 URL url_en = new URL(
-                        BuildConfig.API_ENDPOINT + "check/news?clientHash=" + getClientHash(MainActivity.this) + "&lastSeenNewsID=" + lastSeenNewsID + "&newsLanguage=en");
+                        BuildConfig.API_ENDPOINT + "check/news?clientHash=" + getClientHash(MainActivity_old.this) + "&lastSeenNewsID=" + lastSeenNewsID + "&newsLanguage=en");
                 Log.d(TAG, "URL_EN: " + url_en.toString());
                 HttpsURLConnection url_de_Connection = (HttpsURLConnection) url_de.openConnection();
                 HttpsURLConnection url_en_Connection = (HttpsURLConnection) url_en.openConnection();
@@ -1134,11 +1135,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.d(TAG, "GET news DE response: " + checkNewsResponseDE.toString());
             Log.d(TAG, "GET news EN response: " + checkNewsResponseEN.toString());
             if (statusDE == 200 && checkNewsResponseDE.length() > 0) {
-                File newsFile = IOUtils.Files.getDENewsFile(MainActivity.this);
+                File newsFile = IOUtils.Files.getDENewsFile(MainActivity_old.this);
                 overwriteFile(checkNewsResponseDE.toString(), newsFile);
             }
             if (statusEN == 200 && checkNewsResponseDE.length() > 0) {
-                File newsFile = IOUtils.Files.getENNewsFile(MainActivity.this);
+                File newsFile = IOUtils.Files.getENNewsFile(MainActivity_old.this);
                 overwriteFile(checkNewsResponseEN.toString(), newsFile);
             }
             return null;
@@ -1147,7 +1148,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if (SharedPref.App.News.getLastSeenNewsID(MainActivity.this) < newsID) {
+            if (SharedPref.App.News.getLastSeenNewsID(MainActivity_old.this) < newsID) {
                 fireNewsPrompt();
             } else {
                 // download the newest region list from the backend and prompt user to go to "Profile" and set region, if a new region has been added and the region is set as UNKNOWN or other.

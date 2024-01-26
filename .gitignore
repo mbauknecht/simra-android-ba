@@ -16,3 +16,4 @@ lint-report.html
 .project
 .settings
 .classpath
+*.csv

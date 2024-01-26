@@ -1,49 +1,33 @@
-package de.tuberlin.mcc.simra.app.activities;
-
+/*
 import android.annotation.SuppressLint;
-import android.bluetooth.BluetoothAdapter;
-import android.content.ComponentName;
+
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.button.MaterialButton;
+import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import org.osmdroid.config.Configuration;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.CustomZoomButtonsController;
-import org.osmdroid.views.MapController;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.compass.CompassOverlay;
-import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -51,56 +35,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.util.Consumer;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import de.tuberlin.mcc.simra.app.BuildConfig;
-import de.tuberlin.mcc.simra.app.R;
-import de.tuberlin.mcc.simra.app.databinding.ActivityMainBinding;
-import de.tuberlin.mcc.simra.app.entities.IncidentLogEntry;
-import de.tuberlin.mcc.simra.app.entities.MetaData;
-import de.tuberlin.mcc.simra.app.entities.Profile;
-import de.tuberlin.mcc.simra.app.util.ConnectionManager.BLESTATE;
-import de.tuberlin.mcc.simra.app.services.RecorderService;
-import de.tuberlin.mcc.simra.app.util.ConnectionManager;
-import de.tuberlin.mcc.simra.app.util.IOUtils;
-import de.tuberlin.mcc.simra.app.util.IncidentBroadcaster;
-import de.tuberlin.mcc.simra.app.util.PermissionHelper;
-import de.tuberlin.mcc.simra.app.util.SharedPref;
-import de.tuberlin.mcc.simra.app.util.ble.ConnectionEventListener;
+public class MainActivity1 extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback{
 
-import static de.tuberlin.mcc.simra.app.entities.Profile.profileIsInUnknownRegion;
-import static de.tuberlin.mcc.simra.app.update.VersionUpdater.Legacy.Utils.getAppVersionNumber;
-import static de.tuberlin.mcc.simra.app.util.Constants.ZOOM_LEVEL;
-import static de.tuberlin.mcc.simra.app.util.PermissionHelper.hasBLEPermissions;
-import static de.tuberlin.mcc.simra.app.util.PermissionHelper.requestBlePermissions;
-import static de.tuberlin.mcc.simra.app.util.SimRAuthenticator.getClientHash;
-import static de.tuberlin.mcc.simra.app.util.Utils.activityResultLauncher;
-import static de.tuberlin.mcc.simra.app.util.Utils.fireProfileRegionPrompt;
-import static de.tuberlin.mcc.simra.app.util.Utils.getNews;
-import static de.tuberlin.mcc.simra.app.util.Utils.isLocationServiceOff;
-import static de.tuberlin.mcc.simra.app.util.Utils.nearestRegionsToThisLocation;
-import static de.tuberlin.mcc.simra.app.util.Utils.overwriteFile;
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback{
-
-    private static final String TAG = "MainActivity_LOG";
+    private static final String TAG = MainActivity1.class.getSimpleName();
+    private static final int KEEP_SCREEN_ON_FLAG = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+    private static final int GPS_UPDATE_INTERVAL = 0;
+    private static final int GPS_UPDATE_DISTANCE = 0;
     private final static int REQUEST_ENABLE_BT = 1;
 
     public static ExecutorService myEx;
@@ -138,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Gets called, when OBS is enabled in the settings and user tries to star recording but there
      * is not a connection to an OBS yet.
      */
-    private void showOBSNotConnectedRecordingWarning() {
+ /*   private void showOBSNotConnectedRecordingWarning() {
         android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(this);
         alert.setTitle(R.string.not_connected_warning_title);
         alert.setMessage(R.string.not_connected_recording_warning_message);
@@ -155,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Prompts user to open OBS settings or deactivate OBS.
      * Gets called, when a connection to an OBS fails three times in a row.
      */
-    private void showOBSNotConnectedWarning() {
+ /*   private void showOBSNotConnectedWarning() {
         if (showingOBSWarning) {
             return;
         }
@@ -180,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Gets called, if OBS is enabled in the settings but Bluetooth is disabled, so SimRa cannot
      * connect to OBS.
      */
-    private void showBluetoothNotEnableWarning() {
+   /* private void showBluetoothNotEnableWarning() {
         android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(this);
         alert.setTitle(R.string.bluetooth_not_enable_title);
         alert.setMessage(R.string.bluetooth_not_enable_message);
@@ -198,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Gets called if user responds to the Bluetooth alert. Starts obs connection or disables obs.
      */
-    @Override
+   /* @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_ENABLE_BT) {
@@ -332,11 +275,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         Consumer<Integer> recordIncident = incidentType -> {
-            Toast t = Toast.makeText(MainActivity.this, R.string.recorded_incident, Toast.LENGTH_SHORT);
+            Toast t = Toast.makeText(MainActivity1.this, R.string.recorded_incident, Toast.LENGTH_SHORT);
             t.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 230);
             t.show();
 
-            IncidentBroadcaster.broadcastIncident(MainActivity.this, incidentType);
+            IncidentBroadcaster.broadcastIncident(MainActivity1.this, incidentType);
         };
 
         this.<MaterialButton>findViewById(R.id.report_closepass_incident).setOnClickListener(v -> {
@@ -359,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     ShowRouteActivity.startShowRouteActivity(mBoundRecorderService.getCurrentRideKey(),
                             MetaData.STATE.JUST_RECORDED, true, this);
                 } else {
-                    new AlertDialog.Builder(MainActivity.this)
+                    new AlertDialog.Builder(MainActivity1.this)
                             .setMessage(getString(R.string.errorRideNotRecorded))
                             .setCancelable(false)
                             .setPositiveButton("OK", (dialog, which) -> {
@@ -376,14 +319,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         // OpenBikeSensor
-        activityResultLauncher = activityResultLauncher(MainActivity.this);
+        activityResultLauncher = activityResultLauncher(MainActivity1.this);
         binding.appBarMain.buttonRideSettingsObs.setOnClickListener(view -> startActivity(new Intent(this, OpenBikeSensorActivity.class)));
     }
 
     /**
      * Runnable to connect to OBS.
      */
-    FutureTask<Boolean> obsFT;
+  /*  FutureTask<Boolean> obsFT;
     public class OBSTryConnectRunnable implements Runnable {
         public void run() {
             if (connectionEventListener == null) {
@@ -411,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     // updateOBSButtonStatus(BLESTATE.FOUND);
                     updateOBSButtonStatus();
                     List<UUID> characteristicsToSubscribeTo = List.of(ConnectionManager.INSTANCE.getCLOSE_PASS_CHARACTERISTIC_UUID(),ConnectionManager.INSTANCE.getSENSOR_DISTANCE_CHARACTERISTIC_UUID());
-                    ConnectionManager.INSTANCE.connect(characteristicsToSubscribeTo,MainActivity.this);
+                    ConnectionManager.INSTANCE.connect(characteristicsToSubscribeTo, MainActivity1.this);
                     return null;
                 });
                 connectionEventListener.setOnConnectionSetupComplete(bluetoothGatt -> {
@@ -442,10 +385,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 ConnectionManager.INSTANCE.stopScan();
                 /*if (ConnectionManager.INSTANCE.isConnected()) {
                     // updateOBSButtonStatus(BLESTATE.CONNECTED);
-                }*/
-            }
-            if (ConnectionManager.INSTANCE.getBleState() == BLESTATE.DISCONNECTED) {
-                ConnectionManager.INSTANCE.startScan(MainActivity.this);
+                }
+            }*/
+      /*      if (ConnectionManager.INSTANCE.getBleState() == BLESTATE.DISCONNECTED) {
+                ConnectionManager.INSTANCE.startScan(MainActivity1.this);
                 // updateOBSButtonStatus(BLESTATE.SEARCHING);
             }
             updateOBSButtonStatus();
@@ -455,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void tryConnectToOBS() {
-        if(hasBLEPermissions(MainActivity.this)) {
+        if(hasBLEPermissions(MainActivity1.this)) {
             Log.d(TAG, "has BLE Permissions");
             if (!obsEnabled) {
                 Log.e(TAG, "OBS is not enabled (anymore)");
@@ -494,7 +437,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         } else {
             Log.d(TAG, "has not BLE permissions. Requesting...");
-            requestBlePermissions(MainActivity.this, REQUEST_ENABLE_BT);
+            requestBlePermissions(MainActivity1.this, REQUEST_ENABLE_BT);
         }
     }
 
@@ -503,7 +446,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Deactivates the OBS Settings, so that in future SimRa won't try to connect to OBS automatically
      */
-    private void deactivateOBS() {
+  /*  private void deactivateOBS() {
         obsEnabled = false;
         binding.appBarMain.buttonRideSettingsObs.setVisibility(View.GONE);
         SharedPref.Settings.OpenBikeSensor.setEnabled(false, this);
@@ -533,17 +476,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void startRecording() {
         if (!PermissionHelper.hasBasePermissions(this)) {
-            PermissionHelper.requestFirstBasePermissionsNotGranted(MainActivity.this);
-            Toast.makeText(MainActivity.this, R.string.recording_not_started, Toast.LENGTH_LONG).show();
+            handleMissingPermissions();
+        } else {
+            handleLocationService();
+        }
+    }
+
+    private void handleLocationService() {
+        if (isLocationServiceOff(locationManager)) {
+            showLocationServiceOffDialog();
+        } else {
+            handleRecordingStart();
+        }
+    }
+
+    private void showLocationServiceOffDialog() {
+        new AlertDialog.Builder(MainActivity1.this)
+                .setMessage((R.string.locationServiceisOff + " " + R.string.enableToRecord))
+                .setPositiveButton(android.R.string.ok,
+                        (paramDialogInterface, paramInt) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                .setNegativeButton(R.string.cancel, null).show();
+        Toast.makeText(MainActivity1.this, R.string.recording_not_started, Toast.LENGTH_LONG).show();
+    }
+    private void startRecorderService() {
+        Intent intent = new Intent(MainActivity1.this, RecorderService.class);
+        startService(intent);
+        bindService(intent, mRecorderServiceConnection, Context.BIND_IMPORTANT);
+    }
+    private void handleRecordingStart() {
+        displayButtonsForDrive();
+        getWindow().addFlags(KEEP_SCREEN_ON_FLAG);
+
+        startRecorderService();
+
+        recording = true;
+        Toast.makeText(MainActivity1.this, R.string.recording_started, Toast.LENGTH_LONG).show();
+    }
+    /*
+    private void startRecording() {
+        if (!PermissionHelper.hasBasePermissions(this)) {
+            PermissionHelper.requestFirstBasePermissionsNotGranted(MainActivity1.this);
+            Toast.makeText(MainActivity1.this, R.string.recording_not_started, Toast.LENGTH_LONG).show();
         } else {
             if (isLocationServiceOff(locationManager)) {
                 // notify user
-                new AlertDialog.Builder(MainActivity.this).setMessage((R.string.locationServiceisOff + " " + R.string.enableToRecord))
+                new AlertDialog.Builder(MainActivity1.this).setMessage((R.string.locationServiceisOff + " " + R.string.enableToRecord))
                         .setPositiveButton(android.R.string.ok,
-                                (paramDialogInterface, paramInt) -> MainActivity.this
+                                (paramDialogInterface, paramInt) -> MainActivity1.this
                                         .startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
                         .setNegativeButton(R.string.cancel, null).show();
-                Toast.makeText(MainActivity.this, R.string.recording_not_started, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity1.this, R.string.recording_not_started, Toast.LENGTH_LONG).show();
 
             } else {
                 // show stop button, hide start button
@@ -551,18 +533,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
                 // start RecorderService for accelerometer data recording
-                Intent intent = new Intent(MainActivity.this, RecorderService.class);
+                Intent intent = new Intent(MainActivity1.this, RecorderService.class);
                 startService(intent);
                 bindService(intent, mRecorderServiceConnection, Context.BIND_IMPORTANT);
                 recording = true;
-                Toast.makeText(MainActivity.this, R.string.recording_started, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity1.this, R.string.recording_started, Toast.LENGTH_LONG).show();
             }
         }
-    }
+    }*/
+        /*
 
     private void updateOBSButtonStatus() {
         FloatingActionButton obsButton = binding.appBarMain.buttonRideSettingsObs;
         NavigationView navigationView = findViewById(R.id.nav_view);
+
         if (obsEnabled) {
             // enable Bluetooth button
             navigationView.getMenu().findItem(R.id.nav_bluetooth_connection).setVisible(true);
@@ -601,75 +585,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void onResume() {
         super.onResume();
+        updateOpenBikeSensor();
 
-        // OpenBikeSensor
-        obsEnabled = SharedPref.Settings.OpenBikeSensor.isEnabled(this);
-        updateOBSButtonStatus();
         if (obsEnabled) {
             BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (mBluetoothAdapter == null) {
-                // Device does not support Bluetooth
-                deactivateOBS();
-                Toast.makeText(MainActivity.this, R.string.openbikesensor_bluetooth_incompatible, Toast.LENGTH_LONG)
-                        .show();
+                handleBluetoothNotSupported();
             } else if (!mBluetoothAdapter.isEnabled() && obsEnabled) {
-                // Bluetooth is disabled
-                showBluetoothNotEnableWarning();
+                handleBluetoothNotEnabled();
             } else if(ConnectionManager.INSTANCE.getBleState() != BLESTATE.CONNECTED) {
-                // Bluetooth is enabled
-                Log.d(TAG, "tryConnectToOBS from 623");
                 new Thread(this::tryConnectToOBS).start();
             }
         }
-        // Ensure the button that matches current state is presented.
-        if (recording) {
-            displayButtonsForDrive();
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        } else {
-            displayButtonsForMenu();
-        }
 
-        // Load Configuration with changes from onCreate
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Configuration.getInstance().load(this, prefs);
-
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-        } catch (SecurityException se) {
-            Log.e(TAG, "onStart() permission not granted yet - Exception: " + se.getMessage());
-            Log.e(TAG, Arrays.toString(se.getStackTrace()));
-            Log.d(TAG, "onStart() permission not granted yet");
-        }
-
-        // Refresh the osmdroid configuration on resuming.
-        mMapView.onResume(); // needed for compass and icons
-        mLocationOverlay.onResume();
-        mLocationOverlay.enableMyLocation();
-
+        handleRecordingState();
+        refreshConfiguration();
+        resumeLocationUpdates();
+        refreshOsmdroidConfiguration();
     }
 
     public void onPause() {
         super.onPause();
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        clearKeepScreenOnFlag();
 
         // Load Configuration with changes from onCreate
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         Configuration.getInstance().save(this, prefs);
 
-        // Refresh the osmdroid configuration on pausing.
-        mMapView.onPause(); // needed for compass and icons
-        locationManager.removeUpdates(MainActivity.this);
+        stopLocationUpdates();
+        pauseOsmdroid();
+        unregisterConnectionListener();
+    }
+    private void stopLocationUpdates() {
+        locationManager.removeUpdates(MainActivity1.this);
+    }
+
+    private void pauseOsmdroid() {
+        mMapView.onPause();
         mLocationOverlay.onPause();
         mLocationOverlay.disableMyLocation();
-        // Stop listening to OBS callbacks
-        if (connectionEventListener != null) {
-            ConnectionManager.INSTANCE.unregisterListener(connectionEventListener);
-        }
     }
 
     @SuppressLint("MissingPermission")
     public void onStop() {
         super.onStop();
+        saveLastLocation();
+    }
+
+    private void saveLastLocation() {
         try {
             final Location myLocation = mLocationOverlay.getLastFix();
             if (myLocation != null) {
@@ -678,18 +641,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 editor.putString("lastLoc_longitude", String.valueOf(myLocation.getLongitude()));
                 editor.apply();
             }
-
         } catch (Exception se) {
             Log.e(TAG, "onStop() permission not granted yet - Exception: " + se.getMessage());
             Log.e(TAG, Arrays.toString(se.getStackTrace()));
             se.printStackTrace();
         }
     }
+    private void handleBluetoothNotSupported() {
+        deactivateOBS();
+        Toast.makeText(MainActivity1.this, R.string.openbikesensor_bluetooth_incompatible, Toast.LENGTH_LONG).show();
+    }
 
-    @Override
+    private void handleBluetoothNotEnabled() {
+        showBluetoothNotEnableWarning();
+    }
+
+    private void resumeLocationUpdates() {
+        try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_UPDATE_INTERVAL, GPS_UPDATE_DISTANCE, this);
+        } catch (SecurityException se) {
+            handleLocationUpdateException(se);
+        }
+    }
+
+    private void refreshConfiguration() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Configuration.getInstance().load(this, prefs);
+    }
+
+    private void refreshOsmdroidConfiguration() {
+        mMapView.onResume();
+        mLocationOverlay.onResume();
+        mLocationOverlay.enableMyLocation();
+    }
+    private void handleLocationUpdateException(SecurityException se) {
+        Log.e(TAG, "Location update permission not granted yet - Exception: " + se.getMessage());
+        Log.e(TAG, Arrays.toString(se.getStackTrace()));
+        Log.d(TAG, "Location update permission not granted yet");
+    }
+
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5 && keyCode == KeyEvent.KEYCODE_BACK
-                && event.getRepeatCount() == 0) {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5 && keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             onBackPressed();
             return true;
         }
@@ -699,7 +691,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Navigation Drawer
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    @Override
+    /*@Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -721,19 +713,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_history) {
-            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+            Intent intent = new Intent(MainActivity1.this, HistoryActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_demographic_data) {
-            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+            Intent intent = new Intent(MainActivity1.this, ProfileActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_statistics) {
-            Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
+            Intent intent = new Intent(MainActivity1.this, StatisticsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_aboutSimRa) {
-            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+            Intent intent = new Intent(MainActivity1.this, AboutActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_setting) {
-            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            Intent intent = new Intent(MainActivity1.this, SettingsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_tutorial) {
             Intent i = new Intent(Intent.ACTION_VIEW);
@@ -744,14 +736,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             intent.setData(Uri.parse(getString(R.string.link_simra_Dashboard)));
             startActivity(intent);
         } else if (id == R.id.nav_imprint) {
-            Intent intent = new Intent(MainActivity.this, WebActivity.class);
+            Intent intent = new Intent(MainActivity1.this, WebActivity.class);
             intent.putExtra("URL", getString(R.string.tuberlin_impressum));
             startActivity(intent);
         } else if (id == R.id.nav_contact) {
-            Intent i = new Intent(MainActivity.this, FeedbackActivity.class);
+            Intent i = new Intent(MainActivity1.this, FeedbackActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_bluetooth_connection) {
-            Intent intent = new Intent(MainActivity.this, OpenBikeSensorActivity.class);
+            Intent intent = new Intent(MainActivity1.this, ScrollingTestActivity.class);
             startActivity(intent);
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -761,95 +753,67 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onLocationChanged(Location location) {
+        // Implementation for handling location changes
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
+        // Implementation for handling status changes
     }
 
     @Override
     public void onProviderEnabled(String provider) {
+        // Implementation for handling provider enabled
     }
 
     @Override
     public void onProviderDisabled(String provider) {
+        // Implementation for handling provider disabled
     }
 
     private void fireNewAppVersionPrompt(int installedAppVersion, int newestAppVersion, String urlToNewestAPK, Boolean critical) {
         Log.d(TAG, "fireNewAppVersionPrompt()");
-        // Store the created AlertDialog instance.
-        // Because only AlertDialog has cancel method.
         AlertDialog alertDialog = null;
-        // Create a alert dialog builder.
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        // Get custom login form view.
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity1.this);
         View settingsView = getLayoutInflater().inflate(R.layout.new_update_prompt, null);
-
-        // Set above view in alert dialog.
         builder.setView(settingsView);
-
         builder.setTitle(getString(R.string.new_app_version_title));
 
-        ((TextView) settingsView.findViewById(R.id.installed_version_textView)).setText(getString(R.string.installed_version) + " " + installedAppVersion);
-        ((TextView) settingsView.findViewById(R.id.newest_version_textView)).setText(getString(R.string.newest_version) + " " + newestAppVersion);
-
-        Button googlePlayStoreButton = settingsView.findViewById(R.id.google_play_store_button);
-
-        googlePlayStoreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
-                try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                } catch (android.content.ActivityNotFoundException anfe) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                }
-            }
-        });
-
-        Button apkButton = settingsView.findViewById(R.id.apk_button);
-
-        apkButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(urlToNewestAPK)));
-            }
-        });
-
-        alertDialog = builder.create();
+        setInstalledAndNewestVersionText(settingsView, installedAppVersion, newestAppVersion);
 
         if (critical) {
-            Button closeSimRaButton = settingsView.findViewById(R.id.close_simra_button);
-            closeSimRaButton.setVisibility(View.VISIBLE);
-            closeSimRaButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
+            builder.setIcon(R.drawable.ic_update_red_24dp);
+            builder.setNegativeButton(getString(R.string.new_app_version_close), (dialog, which) -> {
             });
         } else {
-            Button laterButton = settingsView.findViewById(R.id.later_button);
-            laterButton.setVisibility(View.VISIBLE);
-            AlertDialog finalAlertDialog = alertDialog;
-            laterButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finalAlertDialog.cancel();
-                    new NewsTask().execute();
-                }
+            builder.setIcon(R.drawable.ic_update_green_24dp);
+            builder.setNegativeButton(getString(R.string.new_app_version_cancel), (dialog, which) -> {
             });
         }
+        builder.setPositiveButton(getString(R.string.new_app_version_update), (dialog, which) -> {
+            // Open Play Store
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=de.tuberlin.mcc.simra.app"));
+            startActivity(browserIntent);
+        });
 
-        alertDialog.setCanceledOnTouchOutside(false);
-        alertDialog.setCancelable(false);
+        if (alertDialog != null && alertDialog.isShowing()) {
+            alertDialog.dismiss();
+        }
+        alertDialog = builder.show();
         alertDialog.show();
+    }
 
+    private void setInstalledAndNewestVersionText(View settingsView, int installedAppVersion, int newestAppVersion) {
+        TextView installedVersionText = settingsView.findViewById(R.id.installed_version_text);
+        TextView newestVersionText = settingsView.findViewById(R.id.newest_version_text);
+        installedVersionText.setText(getString(R.string.installed_app_version) + " " + installedAppVersion);
+        newestVersionText.setText(getString(R.string.newest_app_version) + " " + newestAppVersion);
     }
 
     private void fireNewsPrompt() {
 
         // get the news from the downloaded config
-        String[] simRa_news_config = getNews(MainActivity.this);
+        String[] simRa_news_config = getNews(MainActivity1.this);
         if (simRa_news_config.length <= 1) {
             Log.e(TAG, "Empty simRa_new_config!");
             return;
@@ -859,7 +823,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Because only AlertDialog has cancel method.
         AlertDialog alertDialog;
         // Create a alert dialog builder.
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity1.this);
         // Get news popup view.
         View newsView = getLayoutInflater().inflate(R.layout.news_popup, null);
         LinearLayout linearLayout = newsView.findViewById(R.id.news_blocks);
@@ -870,7 +834,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (simRa_news_config[i].startsWith("i")){
                 continue;
             }
-            TextView tv = new TextView(MainActivity.this);
+            TextView tv = new TextView(MainActivity1.this);
             int textColor = getResources().getColor(R.color.colorPrimary, null);
             if (simRa_news_config[i].startsWith("*")) {
                 textColor = getResources().getColor(R.color.colorAccent, null);
@@ -895,7 +859,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         AlertDialog finalAlertDialog = alertDialog;
         okButton.setOnClickListener(v -> {
-            SharedPref.App.News.setLastSeenNewsID(newsID, MainActivity.this);
+            SharedPref.App.News.setLastSeenNewsID(newsID, MainActivity1.this);
             finalAlertDialog.cancel();
             // download the newest region list from the backend and prompt user to go to "Profile" and set region, if a new region has been added and the region is set as UNKNOWN or other.
             new RegionTask().execute();
@@ -907,15 +871,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private class CheckForUpdate extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            // Implementation for background update check
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            // Implementation for post-update check
+        }
+    }
     private boolean actualSelectedRegionNotInTopThreeNearestRegion() {
-        if (PermissionHelper.hasBasePermissions(MainActivity.this)) {
+        if (PermissionHelper.hasBasePermissions(MainActivity1.this)) {
             @SuppressLint("MissingPermission")
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (location == null) {
                 return false;
             }
-            int selectedRegion = Profile.loadProfile(null, MainActivity.this).region;
-            int[] nearestRegions = nearestRegionsToThisLocation(location.getLatitude(), location.getLongitude(), MainActivity.this);
+            int selectedRegion = Profile.loadProfile(null, MainActivity1.this).region;
+            int[] nearestRegions = nearestRegionsToThisLocation(location.getLatitude(), location.getLongitude(), MainActivity1.this);
             for (int nearestRegion : nearestRegions) {
                 if (nearestRegion == selectedRegion) {
                     return false;
@@ -940,19 +918,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    MainActivity.this.findViewById(R.id.checkingAppVersionProgressBarRelativeLayout).setVisibility(View.VISIBLE);
+                    MainActivity1.this.findViewById(R.id.checkingAppVersionProgressBarRelativeLayout).setVisibility(View.VISIBLE);
                 }
             });
         }
 
         @Override
         protected String doInBackground(String... strings) {
-            installedAppVersion = getAppVersionNumber(MainActivity.this);
+            installedAppVersion = getAppVersionNumber(MainActivity1.this);
 
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             StringBuilder response = new StringBuilder();
             try {
-                URL url = new URL(BuildConfig.API_ENDPOINT + BuildConfig.API_VERSION + "check-version?clientHash=" + getClientHash(MainActivity.this));
+                URL url = new URL(BuildConfig.API_ENDPOINT + BuildConfig.API_VERSION + "check-version?clientHash=" + getClientHash(MainActivity1.this));
                 Log.d(TAG, "URL: " + url.toString());
                 HttpsURLConnection urlConnection =
                         (HttpsURLConnection) url.openConnection();
@@ -993,11 +971,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    MainActivity.this.findViewById(R.id.checkingAppVersionProgressBarRelativeLayout).setVisibility(View.GONE);
+                    MainActivity1.this.findViewById(R.id.checkingAppVersionProgressBarRelativeLayout).setVisibility(View.GONE);
                 }
             });
             if ((newestAppVersion > 0 && urlToNewestAPK != null && critical != null) && installedAppVersion < newestAppVersion) {
-                MainActivity.this.fireNewAppVersionPrompt(installedAppVersion, newestAppVersion, urlToNewestAPK, critical);
+                MainActivity1.this.fireNewAppVersionPrompt(installedAppVersion, newestAppVersion, urlToNewestAPK, critical);
             } else {
                 new NewsTask().execute();
             }
@@ -1021,11 +999,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             StringBuilder checkRegionsResponse = new StringBuilder();
             int status = 0;
-            lastSeenRegionsID = SharedPref.App.Regions.getLastSeenRegionsID(MainActivity.this);
+            lastSeenRegionsID = SharedPref.App.Regions.getLastSeenRegionsID(MainActivity1.this);
             try {
 
                 URL url = new URL(
-                        BuildConfig.API_ENDPOINT + BuildConfig.API_VERSION + "check-regions?clientHash=" + getClientHash(MainActivity.this) + "&lastSeenRegionsID=" + lastSeenRegionsID);
+                        BuildConfig.API_ENDPOINT + BuildConfig.API_VERSION + "check-regions?clientHash=" + getClientHash(MainActivity1.this) + "&lastSeenRegionsID=" + lastSeenRegionsID);
                 Log.d(TAG, "URL: " + url.toString());
                 HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -1050,7 +1028,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             Log.d(TAG, "GET regions response: " + checkRegionsResponse.toString());
             if (status == 200 && checkRegionsResponse.length() > 0) {
-                File regionsFile = IOUtils.Files.getRegionsFile(MainActivity.this);
+                File regionsFile = IOUtils.Files.getRegionsFile(MainActivity1.this);
                 overwriteFile(checkRegionsResponse.toString(), regionsFile);
             }
             return null;
@@ -1062,10 +1040,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // prompt user to go to "Profile" and set region, if regions have been updated and the region is set as UNKNOWN or other.
             Log.d(TAG, lastSeenRegionsID + " < " + regionsID + ": " + (lastSeenRegionsID < regionsID));
             Log.d(TAG, "actualSelectedRegionNotInTopThreeNearestRegion(): " + actualSelectedRegionNotInTopThreeNearestRegion());
-            if (!SharedPref.App.RegionsPrompt.getRegionPromptShownAfterV81(MainActivity.this) || (!SharedPref.App.RegionsPrompt.getDoNotShowRegionPrompt(MainActivity.this) &&
-                    (((lastSeenRegionsID < regionsID) && profileIsInUnknownRegion(MainActivity.this)) ||
+            if (!SharedPref.App.RegionsPrompt.getRegionPromptShownAfterV81(MainActivity1.this) || (!SharedPref.App.RegionsPrompt.getDoNotShowRegionPrompt(MainActivity1.this) &&
+                    (((lastSeenRegionsID < regionsID) && profileIsInUnknownRegion(MainActivity1.this)) ||
                             actualSelectedRegionNotInTopThreeNearestRegion()))) {
-                fireProfileRegionPrompt(regionsID, MainActivity.this);
+                fireProfileRegionPrompt(regionsID, MainActivity1.this);
             }
         }
     }
@@ -1088,14 +1066,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             StringBuilder checkNewsResponseEN = new StringBuilder();
             int statusDE = 0;
             int statusEN = 0;
-            int lastSeenNewsID = SharedPref.App.News.getLastSeenNewsID(MainActivity.this);
+            int lastSeenNewsID = SharedPref.App.News.getLastSeenNewsID(MainActivity1.this);
             try {
 
                 URL url_de = new URL(
-                        BuildConfig.API_ENDPOINT + BuildConfig.API_VERSION + "check-news?clientHash=" + getClientHash(MainActivity.this) + "&lastSeenNewsID=" + lastSeenNewsID + "&newsLanguage=de");
+                        BuildConfig.API_ENDPOINT + BuildConfig.API_VERSION + "check-news?clientHash=" + getClientHash(MainActivity1.this) + "&lastSeenNewsID=" + lastSeenNewsID + "&newsLanguage=de");
                 Log.d(TAG, "URL_DE: " + url_de.toString());
                 URL url_en = new URL(
-                        BuildConfig.API_ENDPOINT + "check/news?clientHash=" + getClientHash(MainActivity.this) + "&lastSeenNewsID=" + lastSeenNewsID + "&newsLanguage=en");
+                        BuildConfig.API_ENDPOINT + "check/news?clientHash=" + getClientHash(MainActivity1.this) + "&lastSeenNewsID=" + lastSeenNewsID + "&newsLanguage=en");
                 Log.d(TAG, "URL_EN: " + url_en.toString());
                 HttpsURLConnection url_de_Connection = (HttpsURLConnection) url_de.openConnection();
                 HttpsURLConnection url_en_Connection = (HttpsURLConnection) url_en.openConnection();
@@ -1134,11 +1112,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.d(TAG, "GET news DE response: " + checkNewsResponseDE.toString());
             Log.d(TAG, "GET news EN response: " + checkNewsResponseEN.toString());
             if (statusDE == 200 && checkNewsResponseDE.length() > 0) {
-                File newsFile = IOUtils.Files.getDENewsFile(MainActivity.this);
+                File newsFile = IOUtils.Files.getDENewsFile(MainActivity1.this);
                 overwriteFile(checkNewsResponseDE.toString(), newsFile);
             }
             if (statusEN == 200 && checkNewsResponseDE.length() > 0) {
-                File newsFile = IOUtils.Files.getENNewsFile(MainActivity.this);
+                File newsFile = IOUtils.Files.getENNewsFile(MainActivity1.this);
                 overwriteFile(checkNewsResponseEN.toString(), newsFile);
             }
             return null;
@@ -1147,7 +1125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if (SharedPref.App.News.getLastSeenNewsID(MainActivity.this) < newsID) {
+            if (SharedPref.App.News.getLastSeenNewsID(MainActivity1.this) < newsID) {
                 fireNewsPrompt();
             } else {
                 // download the newest region list from the backend and prompt user to go to "Profile" and set region, if a new region has been added and the region is set as UNKNOWN or other.

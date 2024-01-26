@@ -1,4 +1,4 @@
-package de.tuberlin.mcc.simra.app.activities;
+/*package de.tuberlin.mcc.simra.app.activities;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -226,7 +226,7 @@ public class HistoryActivity_old extends BaseActivity {
                     if (actualFile.getName().startsWith(clicked + "_") || actualFile.getName().startsWith("accEvents" + clicked)) {
 
                         /* don't delete the following line! */
-                        Log.i(TAG, actualFile.getName() + " deleted: " + actualFile.delete());
+       /*                 Log.i(TAG, actualFile.getName() + " deleted: " + actualFile.delete());
                     }
                 }
             }

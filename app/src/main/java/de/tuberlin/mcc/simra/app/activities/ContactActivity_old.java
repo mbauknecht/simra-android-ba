@@ -1,4 +1,4 @@
-package de.tuberlin.mcc.simra.app.activities;
+/*package de.tuberlin.mcc.simra.app.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -18,7 +18,7 @@ public class ContactActivity_old extends AppCompatActivity {
     /**
      * Layout Binding.
      */
-
+/*
     ActivityContactBinding binding;
 
     @Override
@@ -49,7 +49,7 @@ public class ContactActivity_old extends AppCompatActivity {
             intent.putExtra("URL", getString(R.string.link_simra_Page));
         });*/
         // Feedback
-        binding.contentContact.buttonFeedback.setOnClickListener(new View.OnClickListener() {
+ /*       binding.contentContact.buttonFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_SEND);

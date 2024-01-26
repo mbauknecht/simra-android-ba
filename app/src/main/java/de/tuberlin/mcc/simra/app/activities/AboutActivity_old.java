@@ -1,5 +1,5 @@
-package de.tuberlin.mcc.simra.app.activities;
-
+/*package de.tuberlin.mcc.simra.app.activities;
+3
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,12 +14,13 @@ import de.tuberlin.mcc.simra.app.util.BaseActivity;
 /**
  * About Activity displaying information about licenses and privacy policies.
  */
+/*
 public class AboutActivity_old extends BaseActivity {
 
     /**
      * Layout Binding.
      */
-    ActivityAboutBinding binding;
+ /*   ActivityAboutBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

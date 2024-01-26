@@ -1,5 +1,5 @@
 // Import statements...
-package de.tuberlin.mcc.simra.app.activities;
+/*package de.tuberlin.mcc.simra.app.activities;
 
 import android.app.Dialog;
 import android.os.Bundle;

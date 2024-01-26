@@ -1,4 +1,4 @@
-package de.tuberlin.mcc.simra.app.activities;
+/*package de.tuberlin.mcc.simra.app.activities;
 
 import static de.tuberlin.mcc.simra.app.util.LogHelper.showDataDirectory;
 import static de.tuberlin.mcc.simra.app.util.LogHelper.showKeyPrefs;
@@ -43,7 +43,7 @@ import de.tuberlin.mcc.simra.app.util.UpdateHelper;
  * Shows general info about the app, if the app is run the first time.
  * If not, MainActivity is started, except if a crash happened before.
  */
-
+/*
 public class StartActivity1 extends BaseActivity {
 
     // Log tag

@@ -1,4 +1,4 @@
-package de.tuberlin.mcc.simra.app.activities;
+/*package de.tuberlin.mcc.simra.app.activities;
 
 import static de.tuberlin.mcc.simra.app.util.IOUtils.Directories.getBaseFolderPath;
 import static de.tuberlin.mcc.simra.app.util.IOUtils.importSimRaData;

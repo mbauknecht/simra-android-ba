@@ -1,4 +1,4 @@
-package de.tuberlin.mcc.simra.app.activities;
+/*package de.tuberlin.mcc.simra.app.activities;
 
 
 import android.content.res.Resources;
@@ -78,7 +78,7 @@ public class StatisticsActivity1 extends AppCompatActivity {
         updateDurationTextView(R.id.durationOfIdleText, R.string.idle, profile.waitedTime);
         updateAverageDurationOfIdleTextView(R.id.averageDurationOfIdleText, R.string.avgIdle, profile.waitedTime, ridesCount);
          //  manually corrected */
-        updateTextView(R.id.durationOfRidesText, R.string.duration, profile.duration);
+   /*     updateTextView(R.id.durationOfRidesText, R.string.duration, profile.duration);
        // updateTextView(R.id.averageSpeedText, R.string.average_Speed, profile.distance, profile.duration, profile.waitedTime, isImperialUnit);
 
         updateTextView(R.id.durationOfIdleText, R.string.idle, profile.waitedTime);
